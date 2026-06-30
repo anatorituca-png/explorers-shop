@@ -40,12 +40,6 @@
       <img class="logo-mark" src="logo-mark.svg" alt="EXPLORERS TECHNOLOGIES logo" width="44" height="44">
       <span class="logo-text">EXPLORERS<small>TECHNOLOGIES</small></span>
     </a>
-    <div class="cat-dd" id="catDd">
-      <button class="cat-dd-btn" id="catDdBtn" aria-haspopup="true" aria-expanded="false">
-        <span class="cat-dd-ic">☰</span><span id="catDdLabel">Shop by Category</span><span class="cat-dd-chev">▾</span>
-      </button>
-      <div class="cat-dd-menu" id="catDdMenu" role="menu"></div>
-    </div>
     <div class="search-box">
       <input id="search" type="text" placeholder="Search phones, laptops, accessories…" aria-label="Search">
       <span class="search-ic">🔍</span>
@@ -59,11 +53,8 @@
 
 <!-- ===== Shop (appears right below the search bar) ===== -->
 <section id="shop" class="container shop">
-  <div class="shop-bar">
-    <div class="shop-bar-left">
-      <h2 class="shop-title" id="shopTitle">All Products</h2>
-      <span id="resultCount" class="result-count"></span>
-    </div>
+  <div class="shop-head">
+    <h2 class="shop-title">Our Products</h2>
     <label class="sort-label">Sort:
       <select id="sort">
         <option value="featured">Featured</option>
@@ -72,6 +63,10 @@
       </select>
     </label>
   </div>
+
+  <!-- horizontal category bar -->
+  <div id="catBar" class="cat-bar"></div>
+  <span id="resultCount" class="result-count"></span>
 
   <div id="grid" class="grid"></div>
 </section>
@@ -126,6 +121,13 @@
     <p class="cart-note">You'll review the full order in WhatsApp before paying.</p>
   </div>
 </aside>
+
+<!-- ===== Product detail modal ===== -->
+<div id="pmOverlay" class="pm-overlay"></div>
+<div id="productModal" class="product-modal" role="dialog" aria-modal="true" aria-label="Product details">
+  <button id="pmClose" class="pm-close" aria-label="Close">✕</button>
+  <div class="pm-body"></div>
+</div>
 
 <!-- ===== Floating WhatsApp ===== -->
 <a id="waFloatLink" class="wa-float" href="#" target="_blank" aria-label="Chat on WhatsApp" title="Chat with us on WhatsApp">

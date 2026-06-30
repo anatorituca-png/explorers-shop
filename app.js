@@ -201,28 +201,22 @@ function stars(r) {
    ============================================================ */
 const MENU_ITEMS = [{ key: "all", label: "All Products", icon: "🛍️" }, ...CATEGORIES];
 
-function renderCategoryMenu() {
-  const menu = $("#catDdMenu");
-  menu.innerHTML = MENU_ITEMS.map(c => {
+function renderCategoryBar() {
+  const bar = $("#catBar");
+  bar.innerHTML = MENU_ITEMS.map(c => {
     const count = c.key === "all" ? PRODUCTS.length : PRODUCTS.filter(p => p.cat === c.key).length;
-    return `<button class="cat-dd-item ${activeCat===c.key?'active':''}" data-cat="${c.key}" role="menuitem">
-      <span class="ddi-ic">${c.icon}</span><span class="ddi-label">${c.label}</span><span class="ddi-count">${count}</span>
+    return `<button class="cat-chip ${activeCat===c.key?'active':''}" data-cat="${c.key}">
+      <span class="cc-ic">${c.icon}</span>${c.label}<span class="cc-count">${count}</span>
     </button>`;
   }).join("");
-  menu.querySelectorAll(".cat-dd-item").forEach(b => b.onclick = () => selectCategory(b.dataset.cat));
-  const cur = MENU_ITEMS.find(c => c.key === activeCat) || MENU_ITEMS[0];
-  $("#catDdLabel").textContent = activeCat === "all" ? "Shop by Category" : cur.label;
-  $("#shopTitle").textContent = cur.label;
+  bar.querySelectorAll(".cat-chip").forEach(b => b.onclick = () => selectCategory(b.dataset.cat));
 }
 
 function selectCategory(key) {
   activeCat = key;
-  closeCatMenu();
   render();
-  window.scrollTo({ top: 0, behavior: "smooth" });
+  window.scrollTo({ top: $("#shop").offsetTop - 64, behavior: "smooth" });
 }
-function openCatMenu()  { $("#catDd").classList.add("open");  $("#catDdMenu").classList.add("open");  $("#catDdBtn").setAttribute("aria-expanded","true"); }
-function closeCatMenu() { $("#catDd").classList.remove("open"); $("#catDdMenu").classList.remove("open"); $("#catDdBtn").setAttribute("aria-expanded","false"); }
 
 function filteredProducts() {
   let list = PRODUCTS.filter(p =>
@@ -237,7 +231,7 @@ function filteredProducts() {
 function productCard(p) {
   const disc = p.old ? Math.round((1 - p.price / p.old) * 100) : 0;
   const soldOut = p.stock <= 0;
-  return `<article class="card">
+  return `<article class="card" data-id="${p.id}">
     <div class="card-img">
       ${disc ? `<span class="disc">-${disc}%</span>` : ""}
       ${stockBadge(p)}
@@ -261,16 +255,60 @@ function productCard(p) {
 }
 
 function render() {
-  renderCategoryMenu();
+  renderCategoryBar();
   const list = filteredProducts();
   const grid = $("#grid");
-  $("#resultCount").textContent = `${list.length} product${list.length!==1?"s":""}`;
+  const curLabel = (MENU_ITEMS.find(c => c.key === activeCat) || MENU_ITEMS[0]).label;
+  $("#resultCount").textContent = `${curLabel} — ${list.length} product${list.length!==1?"s":""}`;
   grid.innerHTML = list.length
     ? list.map(productCard).join("")
     : `<p class="empty">No products match your search.</p>`;
-  grid.querySelectorAll("[data-add]").forEach(b => b.onclick = () => addToCart(Number(b.dataset.add)));
-  grid.querySelectorAll("[data-order]").forEach(b => b.onclick = () => orderSingle(Number(b.dataset.order)));
+  grid.querySelectorAll(".card").forEach(c => c.onclick = () => openProduct(Number(c.dataset.id)));
+  grid.querySelectorAll("[data-add]").forEach(b => b.onclick = e => { e.stopPropagation(); addToCart(Number(b.dataset.add)); });
+  grid.querySelectorAll("[data-order]").forEach(b => b.onclick = e => { e.stopPropagation(); orderSingle(Number(b.dataset.order)); });
   updateCartUI();
+}
+
+/* ---------- product detail (large view) ---------- */
+function specList(desc) {
+  return desc.split(/[,;]\s*/).map(s => s.trim()).filter(Boolean)
+    .map(s => `<li>${s}</li>`).join("");
+}
+function openProduct(id) {
+  const p = byId(id); if (!p) return;
+  const disc = p.old ? Math.round((1 - p.price / p.old) * 100) : 0;
+  const soldOut = p.stock <= 0;
+  const catLabel = (CATEGORIES.find(c => c.key === p.cat) || {}).label || "";
+  $("#productModal .pm-body").innerHTML = `
+    <div class="pm-media">
+      ${disc ? `<span class="pm-disc">-${disc}% OFF</span>` : ""}
+      <img src="${p.img}" alt="${p.name}">
+    </div>
+    <div class="pm-info">
+      <div class="pm-cat">${catLabel}</div>
+      <h2 class="pm-name">${p.name}</h2>
+      <div class="pm-rating">${stars(p.rating)} <small>${p.rating} (${p.reviews} reviews)</small></div>
+      <div class="pm-price-row"><span class="pm-price">${money(p.price)}</span>${p.old ? `<span class="pm-old">${money(p.old)}</span>` : ""}</div>
+      <div class="pm-stock">${stockBadge(p)}</div>
+      <div class="pm-specs"><h4>Details &amp; specifications</h4><ul>${specList(p.desc)}</ul></div>
+      <div class="pm-actions">
+        <button class="btn btn-cart"  id="pmAdd"   ${soldOut?"disabled":""}>Add to Cart</button>
+        <button class="btn btn-order" id="pmOrder" ${soldOut?"disabled":""}>Order on WhatsApp</button>
+      </div>
+      <p class="cart-note" style="text-align:left;margin-top:10px">Delivery is arranged with you on WhatsApp after you order.</p>
+    </div>`;
+  if (!soldOut) {
+    $("#pmAdd").onclick   = () => addToCart(p.id);
+    $("#pmOrder").onclick = () => orderSingle(p.id);
+  }
+  $("#pmOverlay").classList.add("show");
+  $("#productModal").classList.add("open");
+  document.body.style.overflow = "hidden";
+}
+function closeProduct() {
+  $("#pmOverlay").classList.remove("show");
+  $("#productModal").classList.remove("open");
+  document.body.style.overflow = "";
 }
 
 /* ============================================================
@@ -370,12 +408,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   render();
 
-  // category dropdown open/close
-  $("#catDdBtn").onclick = e => {
-    e.stopPropagation();
-    $("#catDd").classList.contains("open") ? closeCatMenu() : openCatMenu();
-  };
-  document.addEventListener("click", e => { if (!e.target.closest("#catDd")) closeCatMenu(); });
+  // product detail modal close handlers
+  $("#pmClose").onclick = closeProduct;
+  $("#pmOverlay").onclick = closeProduct;
+  document.addEventListener("keydown", e => { if (e.key === "Escape") { closeProduct(); closeCart(); } });
 
   $("#search").addEventListener("input", e => { searchTerm = e.target.value.toLowerCase().trim(); render(); });
   $("#sort").addEventListener("change", e => { sortMode = e.target.value; render(); });
