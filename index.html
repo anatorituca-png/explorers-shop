@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EXPLORERS TECHNOLOGIES — Online Electronics Store</title>
+<meta name="description" content="Affordable laptops, phones, smart watches, earphones and accessories in Uganda. Order on WhatsApp for fast delivery.">
+<link rel="stylesheet" href="styles.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- ===== Setup note (shows until WhatsApp number is set) ===== -->
+<div id="setupNote" class="setup-note">
+  ⚠️ <b>Setup:</b> open <code>app.js</code> and replace <code>256700000000</code> with your real WhatsApp number so orders reach you.
+</div>
+
+<!-- ===== Header ===== -->
+<header class="header">
+  <div class="container head-inner">
+    <a href="#" class="logo">
+      <span class="logo-mark">E</span>
+      <span class="logo-text">EXPLORERS<small>TECHNOLOGIES</small></span>
+    </a>
+    <div class="search-box">
+      <input id="search" type="text" placeholder="Search phones, laptops, accessories…" aria-label="Search">
+      <span class="search-ic">🔍</span>
+    </div>
+    <button id="cartBtn" class="cart-btn" aria-label="Open cart">
+      🛒 <span class="cart-label">Cart</span>
+      <span id="cartCount" class="cart-count">0</span>
+    </button>
+  </div>
+</header>
+
+<!-- ===== Hero ===== -->
+<section class="hero">
+  <div class="container hero-inner">
+    <div class="hero-text">
+      <span class="hero-kicker">CUTTING-EDGE ELECTRONICS • UGANDA</span>
+      <h1>Quality gadgets at prices that move.</h1>
+      <p>Phones, laptops, smart watches, audio and accessories — in stock and ready to deliver. Order in seconds straight from WhatsApp.</p>
+      <button id="shopNowBtn" class="btn btn-amber">Shop Now ↓</button>
+      <div class="hero-trust">
+        <span>✔ Genuine stock</span><span>✔ Fair prices</span><span>✔ Fast delivery</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Category cards ===== -->
+<section class="container">
+  <h2 class="section-title">Shop by Category</h2>
+  <div id="catCards" class="cat-cards"></div>
+</section>
+
+<!-- ===== Shop ===== -->
+<section id="shop" class="container shop">
+  <h2 class="section-title">Our Products</h2>
+  <div id="catTabs" class="cat-tabs"></div>
+
+  <div class="shop-bar">
+    <span id="resultCount" class="result-count"></span>
+    <label class="sort-label">Sort:
+      <select id="sort">
+        <option value="featured">Featured</option>
+        <option value="low">Price: Low to High</option>
+        <option value="high">Price: High to Low</option>
+      </select>
+    </label>
+  </div>
+
+  <div id="grid" class="grid"></div>
+</section>
+
+<!-- ===== How it works ===== -->
+<section class="how">
+  <div class="container">
+    <h2 class="section-title light">How Ordering Works</h2>
+    <div class="how-steps">
+      <div class="how-step"><div class="how-n">1</div><h4>Pick your items</h4><p>Browse and add products to your cart.</p></div>
+      <div class="how-step"><div class="how-n">2</div><h4>Tap “Order on WhatsApp”</h4><p>Your order opens a chat with us automatically.</p></div>
+      <div class="how-step"><div class="how-n">3</div><h4>We confirm</h4><p>We check stock and agree on delivery with you.</p></div>
+      <div class="how-step"><div class="how-n">4</div><h4>Get it delivered</h4><p>Pay on delivery or as agreed. Enjoy your gadget!</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Footer ===== -->
+<footer class="footer">
+  <div class="container foot-grid">
+    <div>
+      <div class="logo footer-logo"><span class="logo-mark">E</span><span class="logo-text">EXPLORERS<small>TECHNOLOGIES</small></span></div>
+      <p class="foot-about">Your trusted electronics shop — laptops, phones, smart watches, audio and accessories. Building Uganda's tech & electronics center.</p>
+    </div>
+    <div>
+      <h4>Categories</h4>
+      <p>Phones • Laptops • Smart Watches</p>
+      <p>Earphones • Phone & Laptop Accessories</p>
+      <p>Tablets & Other Devices</p>
+    </div>
+    <div>
+      <h4>Contact & Orders</h4>
+      <p>📍 Kampala, Uganda</p>
+      <p>💬 Order any product on WhatsApp</p>
+      <p>✉️ anatorituca@gmail.com</p>
+    </div>
+  </div>
+  <div class="foot-bottom">© <span id="footYear"></span> EXPLORERS TECHNOLOGIES. All rights reserved.</div>
+</footer>
+
+<!-- ===== Cart drawer ===== -->
+<div id="overlay" class="overlay"></div>
+<aside id="cartDrawer" class="cart-drawer" aria-label="Shopping cart">
+  <div class="cart-head">
+    <h3>Your Cart</h3>
+    <button id="closeCart" class="close-cart" aria-label="Close">✕</button>
+  </div>
+  <div id="cartItems" class="cart-items"></div>
+  <div class="cart-foot">
+    <div class="cart-total-row"><span>Total</span><span id="cartTotal">UGX 0</span></div>
+    <button id="checkoutBtn" class="btn btn-checkout">Checkout via WhatsApp</button>
+    <p class="cart-note">You'll review the full order in WhatsApp before paying.</p>
+  </div>
+</aside>
+
+<!-- ===== Floating WhatsApp ===== -->
+<a id="waFloatLink" class="wa-float" href="#" target="_blank" aria-label="Chat on WhatsApp" title="Chat with us on WhatsApp">
+  <span class="wa-ic">💬</span><span class="wa-txt">Chat with us</span>
+</a>
+
+<div id="toast" class="toast"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
