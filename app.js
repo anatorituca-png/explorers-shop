@@ -199,29 +199,30 @@ function stars(r) {
 /* ============================================================
    Rendering
    ============================================================ */
-function renderCategoryTabs() {
-  const wrap = $("#catTabs");
-  const all = `<button class="cat-tab ${activeCat==='all'?'active':''}" data-cat="all">All Products</button>`;
-  wrap.innerHTML = all + CATEGORIES.map(c =>
-    `<button class="cat-tab ${activeCat===c.key?'active':''}" data-cat="${c.key}">
-       <span>${c.icon}</span> ${c.label}
-     </button>`).join("");
-  wrap.querySelectorAll(".cat-tab").forEach(b =>
-    b.onclick = () => { activeCat = b.dataset.cat; render(); window.scrollTo({top: $("#shop").offsetTop - 70, behavior:"smooth"}); });
-}
+const MENU_ITEMS = [{ key: "all", label: "All Products", icon: "🛍️" }, ...CATEGORIES];
 
-function renderCategoryCards() {
-  $("#catCards").innerHTML = CATEGORIES.map(c => {
-    const count = PRODUCTS.filter(p => p.cat === c.key).length;
-    return `<button class="cat-card" data-cat="${c.key}">
-      <div class="cat-ic">${c.icon}</div>
-      <div class="cat-name">${c.label}</div>
-      <div class="cat-count">${count} items</div>
+function renderCategoryMenu() {
+  const menu = $("#catDdMenu");
+  menu.innerHTML = MENU_ITEMS.map(c => {
+    const count = c.key === "all" ? PRODUCTS.length : PRODUCTS.filter(p => p.cat === c.key).length;
+    return `<button class="cat-dd-item ${activeCat===c.key?'active':''}" data-cat="${c.key}" role="menuitem">
+      <span class="ddi-ic">${c.icon}</span><span class="ddi-label">${c.label}</span><span class="ddi-count">${count}</span>
     </button>`;
   }).join("");
-  $("#catCards").querySelectorAll(".cat-card").forEach(b =>
-    b.onclick = () => { activeCat = b.dataset.cat; render(); window.scrollTo({top: $("#shop").offsetTop - 70, behavior:"smooth"}); });
+  menu.querySelectorAll(".cat-dd-item").forEach(b => b.onclick = () => selectCategory(b.dataset.cat));
+  const cur = MENU_ITEMS.find(c => c.key === activeCat) || MENU_ITEMS[0];
+  $("#catDdLabel").textContent = activeCat === "all" ? "Shop by Category" : cur.label;
+  $("#shopTitle").textContent = cur.label;
 }
+
+function selectCategory(key) {
+  activeCat = key;
+  closeCatMenu();
+  render();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+function openCatMenu()  { $("#catDd").classList.add("open");  $("#catDdMenu").classList.add("open");  $("#catDdBtn").setAttribute("aria-expanded","true"); }
+function closeCatMenu() { $("#catDd").classList.remove("open"); $("#catDdMenu").classList.remove("open"); $("#catDdBtn").setAttribute("aria-expanded","false"); }
 
 function filteredProducts() {
   let list = PRODUCTS.filter(p =>
@@ -260,7 +261,7 @@ function productCard(p) {
 }
 
 function render() {
-  renderCategoryTabs();
+  renderCategoryMenu();
   const list = filteredProducts();
   const grid = $("#grid");
   $("#resultCount").textContent = `${list.length} product${list.length!==1?"s":""}`;
@@ -367,8 +368,14 @@ document.addEventListener("DOMContentLoaded", () => {
   $("#waFloatLink").href = waLink(`Hello ${CONFIG.businessName}, I have a question about your products.`);
   $("#footYear").textContent = new Date().getFullYear();
 
-  renderCategoryCards();
   render();
+
+  // category dropdown open/close
+  $("#catDdBtn").onclick = e => {
+    e.stopPropagation();
+    $("#catDd").classList.contains("open") ? closeCatMenu() : openCatMenu();
+  };
+  document.addEventListener("click", e => { if (!e.target.closest("#catDd")) closeCatMenu(); });
 
   $("#search").addEventListener("input", e => { searchTerm = e.target.value.toLowerCase().trim(); render(); });
   $("#sort").addEventListener("change", e => { sortMode = e.target.value; render(); });
@@ -376,7 +383,6 @@ document.addEventListener("DOMContentLoaded", () => {
   $("#closeCart").onclick = closeCart;
   $("#overlay").onclick = closeCart;
   $("#checkoutBtn").onclick = checkout;
-  $("#shopNowBtn").onclick = () => window.scrollTo({top: $("#shop").offsetTop - 70, behavior:"smooth"});
 
   // warn if WhatsApp number not set
   if (CONFIG.whatsapp === "256700000000") {

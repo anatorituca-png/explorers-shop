@@ -32,6 +32,30 @@ a{text-decoration:none;color:inherit}
 .cart-count{background:var(--navy);color:#fff;border-radius:50%;min-width:20px;height:20px;
   font-size:12px;display:grid;place-items:center;padding:0 5px}
 
+/* ===== category dropdown (top-left of header) ===== */
+.cat-dd{position:relative;flex:none}
+.cat-dd-btn{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.12);color:#fff;
+  border:1px solid rgba(255,255,255,.18);border-radius:30px;padding:10px 16px;font-size:14px;font-weight:600;white-space:nowrap}
+.cat-dd-btn:hover{background:rgba(255,255,255,.22)}
+.cat-dd-ic{font-size:15px}
+.cat-dd-chev{font-size:11px;transition:.2s}
+.cat-dd.open .cat-dd-chev{transform:rotate(180deg)}
+.cat-dd-menu{position:absolute;top:calc(100% + 8px);left:0;min-width:250px;background:#fff;border:1px solid var(--line);
+  border-radius:12px;box-shadow:var(--shadow);padding:6px;display:none;z-index:60;max-height:72vh;overflow:auto}
+.cat-dd-menu.open{display:block}
+.cat-dd-item{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:none;border:none;
+  padding:10px 12px;border-radius:8px;font-size:14px;color:var(--ink);cursor:pointer}
+.cat-dd-item:hover{background:var(--light)}
+.cat-dd-item.active{background:var(--light);color:var(--navy);font-weight:600}
+.ddi-ic{font-size:16px;width:22px;text-align:center}
+.ddi-label{flex:1}
+.ddi-count{font-size:12px;color:var(--grey);background:#eef3f8;border-radius:20px;padding:1px 9px}
+
+/* products sit right under the header */
+.shop{padding-top:22px}
+.shop-bar-left{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.shop-title{font-size:22px;font-weight:700;color:var(--navy)}
+
 /* ===== hero ===== */
 .hero{background:linear-gradient(120deg,var(--navy),#123a63 70%);color:#fff;position:relative;overflow:hidden}
 .hero::after{content:"";position:absolute;right:-120px;top:-80px;width:380px;height:380px;border-radius:50%;
@@ -164,6 +188,9 @@ a{text-decoration:none;color:inherit}
   .head-inner{flex-wrap:wrap;gap:10px}
   .search-box{order:3;max-width:100%;flex-basis:100%}
   .cart-label{display:none}
+  .cat-dd-btn{padding:9px 12px;font-size:13px}
+  #catDdLabel{max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .cat-dd-menu{min-width:220px}
   .hero h1{font-size:30px}
   .grid{grid-template-columns:repeat(2,1fr);gap:12px}
   .cat-cards{grid-template-columns:repeat(2,1fr)}

@@ -40,6 +40,12 @@
       <img class="logo-mark" src="logo-mark.svg" alt="EXPLORERS TECHNOLOGIES logo" width="44" height="44">
       <span class="logo-text">EXPLORERS<small>TECHNOLOGIES</small></span>
     </a>
+    <div class="cat-dd" id="catDd">
+      <button class="cat-dd-btn" id="catDdBtn" aria-haspopup="true" aria-expanded="false">
+        <span class="cat-dd-ic">☰</span><span id="catDdLabel">Shop by Category</span><span class="cat-dd-chev">▾</span>
+      </button>
+      <div class="cat-dd-menu" id="catDdMenu" role="menu"></div>
+    </div>
     <div class="search-box">
       <input id="search" type="text" placeholder="Search phones, laptops, accessories…" aria-label="Search">
       <span class="search-ic">🔍</span>
@@ -51,34 +57,13 @@
   </div>
 </header>
 
-<!-- ===== Hero ===== -->
-<section class="hero">
-  <div class="container hero-inner">
-    <div class="hero-text">
-      <span class="hero-kicker">CUTTING-EDGE ELECTRONICS • UGANDA</span>
-      <h1>Quality gadgets at prices that move.</h1>
-      <p>Phones, laptops, smart watches, audio and accessories — in stock and ready to deliver. Order in seconds straight from WhatsApp.</p>
-      <button id="shopNowBtn" class="btn btn-amber">Shop Now ↓</button>
-      <div class="hero-trust">
-        <span>✔ Genuine stock</span><span>✔ Fair prices</span><span>✔ Fast delivery</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ===== Category cards ===== -->
-<section class="container">
-  <h2 class="section-title">Shop by Category</h2>
-  <div id="catCards" class="cat-cards"></div>
-</section>
-
-<!-- ===== Shop ===== -->
+<!-- ===== Shop (appears right below the search bar) ===== -->
 <section id="shop" class="container shop">
-  <h2 class="section-title">Our Products</h2>
-  <div id="catTabs" class="cat-tabs"></div>
-
   <div class="shop-bar">
-    <span id="resultCount" class="result-count"></span>
+    <div class="shop-bar-left">
+      <h2 class="shop-title" id="shopTitle">All Products</h2>
+      <span id="resultCount" class="result-count"></span>
+    </div>
     <label class="sort-label">Sort:
       <select id="sort">
         <option value="featured">Featured</option>
