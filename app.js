@@ -136,6 +136,49 @@ const PRODUCTS = [
       "images2/macbook-pro-2012-3.png",
     ],
   },
+  {
+    id: 206, cat: "laptops", name: "HP EliteBook 830 / 840 G5/G6", price: 1250000, stock: 1,
+    desc: "Intel Core i5 8th Gen, 16GB RAM, 512GB SSD, 13.3\" display, Windows 11 — a fast, premium business ultrabook with plenty of memory and storage for heavy work.",
+    imgs: [
+      "images2/hp-elitebook-830-1.jpeg",
+      "images2/hp-elitebook-830-2.jpeg",
+      "images2/hp-elitebook-830-3.jpeg",
+    ],
+  },
+  {
+    id: 207, cat: "laptops", name: "HP EliteBook 820 G1/G2", price: 800000, stock: 1,
+    desc: "Intel Core i5, 8GB RAM, 256GB SSD, 12.5\" display — a compact, durable business laptop, easy to carry for office and study.",
+    imgs: [
+      "images2/hp-elitebook-820-1.png",
+      "images2/hp-elitebook-820-2.png",
+    ],
+  },
+  {
+    id: 208, cat: "laptops", name: "HP EliteBook 840 / 830 G8 (11th Gen)", price: 1800000, stock: 1,
+    desc: "Intel Core i7 11th Gen, 16GB RAM, 256GB SSD, Windows — Silver (Renewed). A powerful premium business laptop with top-tier processing for demanding work.",
+    imgs: [
+      "images2/hp-elitebook-840-1.png",
+      "images2/hp-elitebook-840-2.png",
+      "images2/hp-elitebook-840-3.png",
+    ],
+  },
+
+  // ===== LAPTOP ACCESSORIES =====
+  {
+    id: 601, cat: "laptopacc", name: "Dell Wired Mouse", price: 8000, stock: 1,
+    desc: "Dell USB wired optical mouse — plug-and-play, comfortable and reliable for everyday laptop and desktop use.",
+    imgs: ["images2/dell-mouse-wired-1.jpeg"],
+  },
+  {
+    id: 602, cat: "laptopacc", name: "HP Wired Mouse", price: 8000, stock: 1,
+    desc: "HP USB wired optical mouse — smooth, accurate tracking with a durable build. A great affordable everyday mouse.",
+    imgs: ["images2/hp-mouse-wired-1.jpeg"],
+  },
+  {
+    id: 603, cat: "laptopacc", name: "HP Wired Mouse (Premium)", price: 20000, stock: 1,
+    desc: "HP USB wired optical mouse — an upgraded model with a comfortable ergonomic design and precise tracking for work and study.",
+    imgs: ["images2/hp-mouse-wired2-1.jpeg"],
+  },
 ];
 
 /* primary image = first photo in the gallery */
