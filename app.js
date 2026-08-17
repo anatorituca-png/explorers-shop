@@ -13,6 +13,18 @@ const CONFIG = {
   location: "Kampala, Uganda",
 };
 
+/* ============================================================
+   >>> SET YOUR SUPABASE PROJECT DETAILS HERE <<<
+   From the EESA management app's Supabase project: Project
+   Settings -> API. The anon key is public/safe to ship in this
+   file — it only grants read access to products (see the RLS
+   policies in eesa/supabase/migrations/0001_init.sql).
+   ============================================================ */
+const SUPABASE = {
+  url: "https://xoawmakldccmwdomovld.supabase.co",
+  anonKey: "sb_publishable_e-eYudkAz7tetEkdIHA40Q_Kym6JcHm",
+};
+
 /* ---------- Categories ---------- */
 const CATEGORIES = [
   { key: "laptops",   label: "Laptops",             icon: "💻" },
@@ -24,174 +36,46 @@ const CATEGORIES = [
   { key: "other",     label: "Other Devices",       icon: "📦" },
 ];
 
-/* ---------- Products (grouped by category, in order) ----------
-   Only laptops are stocked for now. Other categories are left
-   empty on purpose — they will be filled when new stock arrives.
-   Each laptop lists ALL the physical units we have in `imgs`, so a
-   customer can see the different appearances of the actual pieces
-   available.
+/* ---------- Products ----------
+   Loaded live from Supabase (see loadProducts() below) instead of being
+   hardcoded here. Add/edit/delete products in the EESA management app and
+   they appear here automatically on next page load — no redeploy needed.
    ------------------------------------------------------------ */
-const PRODUCTS = [
-  // ===== PHONES =====
-  {
-    id: 101, cat: "phones", name: "Xiaomi Redmi 14C", price: 300000, stock: 1,
-    desc: "6.88\" display, 8GB (4+4) RAM, 128GB ROM, 50MP camera, 5160mAh battery — Black. A big-screen everyday phone with strong battery life.",
-    imgs: ["images2/redmi-14c-1.jpeg", "images2/redmi-14c-2.jpeg"],
-  },
-  {
-    id: 102, cat: "phones", name: "Xiaomi Redmi 15C", price: 350000, stock: 1,
-    desc: "6.9\" display, 8GB RAM, 256GB ROM, Android 15 — Black. Large screen with plenty of storage for apps, photos and media.",
-    imgs: ["images2/redmi-15c-1.jpeg", "images2/redmi-15c-2.jpeg"],
-  },
-  {
-    id: 103, cat: "phones", name: "Samsung Galaxy Note 10", price: 700000, stock: 1,
-    desc: "8GB RAM, 256GB ROM, 12MP + 16MP dual camera, 3500mAh battery — Multicolour. A premium Samsung flagship with S Pen and vivid display.",
-    imgs: ["images2/samsung-note10-1.jpeg", "images2/samsung-note10-2.jpeg"],
-  },
-  {
-    id: 104, cat: "phones", name: "Infinix Note 8i", price: 300000, stock: 1,
-    desc: "128GB storage — a large-screen Infinix phone with big battery, great for streaming and everyday use.",
-    imgs: ["images2/infinix-note8i-1.jpeg", "images2/infinix-note8i-2.jpeg"],
-  },
-  {
-    id: 105, cat: "phones", name: "Samsung Galaxy A14", price: 300000, stock: 1,
-    desc: "6.6\" display, 4GB RAM + 128GB storage, 50MP camera, Dual SIM, 5000mAh battery. Reliable Samsung mid-range with all-day battery.",
-    imgs: ["images2/samsung-a14-1.jpeg", "images2/samsung-a14-2.jpeg"],
-  },
-  {
-    id: 106, cat: "phones", name: "Xiaomi Redmi A3x", price: 300000, stock: 1,
-    desc: "6.71\" display, 3GB RAM, 64GB ROM, 8MP camera, 5000mAh battery — Black. An affordable, dependable phone for calls, chat and browsing.",
-    imgs: ["images2/redmi-a3x-1.jpeg", "images2/redmi-a3x-2.jpeg"],
-  },
-  {
-    id: 107, cat: "phones", name: "Tecno Spark 30C", price: 300000, stock: 1,
-    desc: "6.67\" display, 8GB RAM, 128GB ROM, 50MP camera, 5000mAh battery — Orbit Black. Roomy storage and a big battery at a great price.",
-    imgs: ["images2/tecno-spark-30c-1.jpeg", "images2/tecno-spark-30c-2.jpeg"],
-  },
-  {
-    id: 108, cat: "phones", name: "Samsung Galaxy S9", price: 350000, stock: 1,
-    desc: "5.8\" QHD AMOLED display, 4GB RAM + 64GB ROM, 12MP + 8MP camera, 3000mAh battery — Midnight Black. A compact Samsung flagship with a stunning screen.",
-    imgs: ["images2/samsung-s9-1.jpeg", "images2/samsung-s9-2.jpeg"],
-  },
-  {
-    id: 109, cat: "phones", name: "Oppo A31", price: 250000, stock: 1,
-    desc: "4G LTE smartphone, Dual SIM, 4GB RAM, 128GB ROM (Android). Smooth everyday performance with generous storage at a low price.",
-    imgs: ["images2/oppo-a31-1.jpeg", "images2/oppo-a31-2.jpeg"],
-  },
-  {
-    id: 110, cat: "phones", name: "Samsung Galaxy S20+ 5G", price: 650000, stock: 1,
-    desc: "128GB storage, 5G, Dual SIM (SM-G986U1). A powerful Samsung flagship with a large high-refresh display and pro-grade cameras.",
-    imgs: ["images2/samsung-s20plus-1.jpeg", "images2/samsung-s20plus-2.jpeg"],
-  },
-  {
-    id: 111, cat: "phones", name: "Tecno Spark 7", price: 230000, stock: 1,
-    desc: "6.5\" display, 2GB RAM, 32GB ROM, 16MP camera, 5000mAh battery — Black. A budget-friendly phone with a big screen and long-lasting battery.",
-    imgs: ["images2/spark-7-1.jpeg", "images2/spark-7-2.jpeg"],
-  },
+let PRODUCTS = [];
 
-  // ===== LAPTOPS =====
-  {
-    id: 201, cat: "laptops", name: "Lenovo 100e", price: 350000, stock: 4,
-    desc: "4GB DDR4 RAM, 64GB eMMC SSD, 11.6\" HD (1366x768) anti-glare 250-nit display — light and affordable, great for students & everyday browsing.",
-    imgs: [
-      "images2/lenovo-100e-1.png",
-      "images2/lenovo-100e-2.png",
-      "images2/lenovo-100e-3.png",
-      "images2/lenovo-100e-4.png",
-    ],
-  },
-  {
-    id: 202, cat: "laptops", name: "Dell Latitude E5480", price: 800000, stock: 4,
-    desc: "Intel Core i5, 8GB RAM, 256GB SSD, 14\" screen, strong battery life, Windows 11 Pro — a reliable business & office laptop.",
-    imgs: [
-      "images2/dell-e5480-1.png",
-      "images2/dell-e5480-2.png",
-      "images2/dell-e5480-3.png",
-      "images2/dell-e5480-4.png",
-    ],
-  },
-  {
-    id: 203, cat: "laptops", name: "Dell Latitude 3190 Notebook", price: 380000, stock: 2,
-    desc: "Intel Celeron, 4GB RAM, 128GB SSD, 11.6\" compact notebook — durable and portable for school & light work.",
-    imgs: [
-      "images2/dell-3190-1.png",
-      "images2/dell-3190-2.jpeg",
-    ],
-  },
-  {
-    id: 204, cat: "laptops", name: "Lenovo ThinkPad E14 Gen 2", price: 700000, stock: 1,
-    desc: "Intel Core i5-1135G7 2.40GHz, 8GB RAM, 512GB SSD, 14\" display — a fast, durable business laptop with a big SSD for work and study.",
-    imgs: [
-      "images2/lenovo-thinkpad-e14-1.png",
-      "images2/lenovo-thinkpad-e14-2.png",
-      "images2/lenovo-thinkpad-e14-3.png",
-    ],
-  },
-  {
-    id: 205, cat: "laptops", name: "Apple MacBook Pro 13.3\" (2012)", price: 600000, stock: 1,
-    desc: "Intel Core i5-3210M 2.50GHz, 8GB RAM, 500GB HDD, 13.3\" display — a classic aluminium MacBook Pro, great for macOS work and everyday use.",
-    imgs: [
-      "images2/macbook-pro-2012-1.png",
-      "images2/macbook-pro-2012-2.png",
-      "images2/macbook-pro-2012-3.png",
-    ],
-  },
-  {
-    id: 206, cat: "laptops", name: "HP EliteBook 830 / 840 G5/G6", price: 1250000, stock: 1,
-    desc: "Intel Core i5 8th Gen, 16GB RAM, 512GB SSD, 13.3\" display, Windows 11 — a fast, premium business ultrabook with plenty of memory and storage for heavy work.",
-    imgs: [
-      "images2/hp-elitebook-830-1.jpeg",
-      "images2/hp-elitebook-830-2.jpeg",
-      "images2/hp-elitebook-830-3.jpeg",
-    ],
-  },
-  {
-    id: 207, cat: "laptops", name: "HP EliteBook 820 G1/G2", price: 800000, stock: 1,
-    desc: "Intel Core i5, 8GB RAM, 256GB SSD, 12.5\" display — a compact, durable business laptop, easy to carry for office and study.",
-    imgs: [
-      "images2/hp-elitebook-820-1.png",
-      "images2/hp-elitebook-820-2.png",
-    ],
-  },
-  {
-    id: 208, cat: "laptops", name: "HP EliteBook 840 / 830 G8 (11th Gen)", price: 1800000, stock: 1,
-    desc: "Intel Core i7 11th Gen, 16GB RAM, 256GB SSD, Windows — Silver (Renewed). A powerful premium business laptop with top-tier processing for demanding work.",
-    imgs: [
-      "images2/hp-elitebook-840-1.png",
-      "images2/hp-elitebook-840-2.png",
-      "images2/hp-elitebook-840-3.png",
-    ],
-  },
+function normalizeProducts() {
+  PRODUCTS.forEach(p => {
+    /* primary image = first photo in the gallery */
+    p.imgs = p.imgs && p.imgs.length ? p.imgs : [p.img];
+    p.img = p.imgs[0];
+    /* deterministic pseudo rating + reviews so the page feels alive */
+    p.rating = (4 + ((p.id * 3) % 10) / 10).toFixed(1);   // 4.0 – 4.9
+    p.reviews = 8 + ((p.id * 13) % 240);
+  });
+}
 
-  // ===== LAPTOP ACCESSORIES =====
-  {
-    id: 601, cat: "laptopacc", name: "Dell Wired Mouse", price: 8000, stock: 1,
-    desc: "Dell USB wired optical mouse — plug-and-play, comfortable and reliable for everyday laptop and desktop use.",
-    imgs: ["images2/dell-mouse-wired-1.jpeg"],
-  },
-  {
-    id: 602, cat: "laptopacc", name: "HP Wired Mouse", price: 8000, stock: 1,
-    desc: "HP USB wired optical mouse — smooth, accurate tracking with a durable build. A great affordable everyday mouse.",
-    imgs: ["images2/hp-mouse-wired-1.jpeg"],
-  },
-  {
-    id: 603, cat: "laptopacc", name: "HP Wired Mouse (Premium)", price: 20000, stock: 1,
-    desc: "HP USB wired optical mouse — an upgraded model with a comfortable ergonomic design and precise tracking for work and study.",
-    imgs: ["images2/hp-mouse-wired2-1.jpeg"],
-  },
-];
+async function loadProducts() {
+  const url = `${SUPABASE.url}/rest/v1/products?select=id,cat,name,price,stock,description,images&order=created_at.desc`;
+  const res = await fetch(url, {
+    headers: {
+      apikey: SUPABASE.anonKey,
+      Authorization: `Bearer ${SUPABASE.anonKey}`,
+    },
+  });
+  if (!res.ok) throw new Error(`Failed to load products (${res.status})`);
+  const rows = await res.json();
 
-/* primary image = first photo in the gallery */
-PRODUCTS.forEach(p => {
-  p.imgs = p.imgs && p.imgs.length ? p.imgs : [p.img];
-  p.img = p.imgs[0];
-});
-
-/* deterministic pseudo rating + reviews so the page feels alive */
-PRODUCTS.forEach(p => {
-  p.rating = (4 + ((p.id * 3) % 10) / 10).toFixed(1);   // 4.0 – 4.9
-  p.reviews = 8 + ((p.id * 13) % 240);
-});
+  PRODUCTS = rows.map(r => ({
+    id: r.id,
+    cat: r.cat,
+    name: r.name,
+    price: Number(r.price),
+    stock: r.stock,
+    desc: r.description || "",
+    imgs: r.images && r.images.length ? r.images : [],
+  }));
+  normalizeProducts();
+}
 
 /* ============================================================
    State + helpers
@@ -466,12 +350,19 @@ function toast(text) {
 function openCart()  { $("#cartDrawer").classList.add("open");  $("#overlay").classList.add("show"); }
 function closeCart() { $("#cartDrawer").classList.remove("open"); $("#overlay").classList.remove("show"); }
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   // fill dynamic text
   $("#waFloatLink").href = waLink(`Hello ${CONFIG.businessName}, I have a question about your products.`);
   $("#footYear").textContent = new Date().getFullYear();
 
-  render();
+  $("#grid").innerHTML = `<p class="empty">Loading products…</p>`;
+  try {
+    await loadProducts();
+    render();
+  } catch (err) {
+    console.error(err);
+    $("#grid").innerHTML = `<p class="empty">Couldn't load products right now. Please refresh, or message us on WhatsApp.</p>`;
+  }
 
   // product detail modal close handlers
   $("#pmClose").onclick = closeProduct;
